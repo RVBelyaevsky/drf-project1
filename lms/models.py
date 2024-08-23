@@ -6,7 +6,7 @@ NULLABLE = {"blank": True, "null": True}
 class Course(models.Model):
     course_title = models.CharField(max_length=255, verbose_name="Название курса")
     course_description = models.TextField(verbose_name="Описание курса", **NULLABLE)
-    preview = models.ImageField(upload_to="lms/course_img", verbose_name="превью")
+    preview = models.ImageField(upload_to="lms/course_img", verbose_name="превью", **NULLABLE)
 
     def __str__(self):
         return self.course_title
