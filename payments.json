@@ -1,0 +1,26 @@
+[
+  {
+    "model": "users.payment",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 1,
+      "amount": 100000,
+      "created_at": "2024-08-29T04:35:49Z",
+      "pay_method": "visa"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 3,
+      "amount": 50000,
+      "created_at": "2024-08-29T04:36:07Z",
+      "pay_method": "visa"
+    }
+  }
+]
