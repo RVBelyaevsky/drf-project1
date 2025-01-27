@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from lms.models import Course, Lesson
 
 
