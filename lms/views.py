@@ -1,12 +1,14 @@
 from rest_framework import viewsets
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
+                                     UpdateAPIView, get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from lms.models import Course, Lesson
+from lms.models import Course, Lesson, CourseSubscription
 from lms.permissions import IsOwner
-from lms.serializers import CourseSerializer, LessonSerializer
+from lms.serializers import CourseSerializer, LessonSerializer, CourseSubscriptionSerializer
 from users.permissions import IsModer
 
 
@@ -51,4 +53,29 @@ class LessonDestroyApiView(DestroyAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = (IsAuthenticated, IsOwner, ~IsModer)
+
+
+class CourseSubscriptionListApiView(ListAPIView):
+    serializer_class = CourseSubscriptionSerializer
+    queryset = CourseSubscription.objects.all()
+
+
+class CourseSubscriptionApiView(APIView):
+    queryset = CourseSubscription.objects.all()
+    serializer_class = CourseSubscriptionSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        course_id = request.data.get('course')
+        course_item = get_object_or_404(Course, pk=course_id)
+        subs_item = CourseSubscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'вы отписались'
+        else:
+            CourseSubscription.objects.create(user=user, course=course_item)
+            message = 'вы подписались'
+        return Response({"message": message})
 
