@@ -45,6 +45,9 @@ class Payment(models.Model):
     created_at = models.DateTimeField(verbose_name="дата создания")
     pay_method = models.CharField(max_length=20, choices=PAY_CHOICES, verbose_name="способ оплаты")
 
+    session_id = models.CharField(max_length=255, **NULLABLE, verbose_name="ID сессии")
+    link = models.URLField(max_length=400, **NULLABLE, verbose_name='ссылка на оплату')
+
     def __str__(self):
         return f"Оплата для {self.user} на сумму {self.amount}"
 
