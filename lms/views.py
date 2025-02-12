@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView, get_object_or_404)
@@ -11,6 +11,8 @@ from lms.paginators import MyPaginator
 from lms.permissions import IsOwner
 from lms.serializers import CourseSerializer, LessonSerializer, CourseSubscriptionSerializer
 from users.permissions import IsModer
+
+from lms.tasks import mailing_course_update_sub
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -27,6 +29,20 @@ class CourseViewSet(viewsets.ModelViewSet):
             self.permission_classes = (IsOwner | ~IsModer,)
         return super().get_permissions()
 
+
+    # def perform_update(self, serializer):
+    #     updated_course = serializer.save()
+    #     #mailing_course_update_sub.delay(updated_course)
+    #     updated_course.save()
+    def partial_update(self, request, pk=None):
+        course = get_object_or_404(Course, pk=pk)
+        serializer = self.get_serializer(course, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            mailing_course_update_sub.delay(pk)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LessonCreateApiView(CreateAPIView):
     serializer_class = LessonSerializer

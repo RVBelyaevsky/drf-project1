@@ -27,7 +27,7 @@ class CourseSerializer(ModelSerializer):
     class Meta:
         model = Course
         fields = ('course_title', 'course_description', 'count_lessons', 'lessons', 'is_subscribed')
-        validators = [LinkCheckValidator(field='course_description')]
+        #validators = [LinkCheckValidator(field='course_description')]
 
 
 class CourseSubscriptionSerializer(ModelSerializer):

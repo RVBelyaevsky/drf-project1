@@ -12,4 +12,5 @@ django-cors-headers==4.6.0
 stripe==11.5.0
 celery==5.4.0
 eventlet==0.39.0
-
+redis==5.2.1
+django-celery-beat==2.7.0
